@@ -50,6 +50,23 @@
  Thread: É a capacidade de um processador processar diversas instruções simultaneamente, um pedaço de um processo capaz de executar determinada tarefa 
 */
 
+/* Promisses: É um objeto que irá conter o resultado de uma operação assincrona, quando esta foi bem sucedida dizemos que a promisse foi preenchida (fullfiled).
+Ex: Quando compramos um bilhete de loteria tem-se a promessa que vamos receber o dinheiro se acertarmos os valores da loteria, ou seja, essa promessa pode ser bem sucedidada (fullfilled) ou não (error). A loteria ocorre de maneira assincrona, não precisamos parar nossa "vida" até o fim da loteria. 
+
+Ciclo de uma vida de uma promisse:
+1) Pending
+2) Settled: Estado em que a operação assincrona é finalizada
+   Fullfilled : A operação assincrona foi bem sucedida e a promisse foi preenchida com um valor esperada.
+   Rejected: Houve um erro na operação assincrona e a promisse não foi preenchida corretamente. 
+
+Ex: Ao utilizarmos a função fetch da Fetch Api, para fazermos a requisição de um dado vindo através de uma API, esta cria uma promisse, que irá armazenar a responsta vinda de uma API. A promisse contém o metodo then, este metodo é executado quando a promisse for preenchida (fullfiled)
+
+Quando usamos o resultado de uma promisse dizemos que estamos consumindo a promisse
+
+
+
+*/
+
 // Require -> Importando modulos no Node
 const os = require("os");
 const logger = require("log");
