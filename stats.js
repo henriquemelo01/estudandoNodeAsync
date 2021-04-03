@@ -63,9 +63,26 @@ Ex: Ao utilizarmos a função fetch da Fetch Api, para fazermos a requisição d
 
 Quando usamos o resultado de uma promisse dizemos que estamos consumindo a promisse
 
-
-
 */
+
+// Consumindo Promisses -> Acessando dados de uma API
+const getCountry = function (countryName) {
+  const request = fetch(`https://restcountries.eu/rest/v2/name/${countryName}`);
+  request
+    .then((response) => {
+      // É um metodo do objeto response que permite acessar o body da response -> parse
+      return response.json();
+    })
+    .then((data) => {
+      const [countryData] = data;
+      // country data é um object
+      const { capital, population, region } = countryData;
+      console.log(countryData);
+      console.log(capital, population, region);
+    });
+};
+
+getCountry("brazil");
 
 // Require -> Importando modulos no Node
 const os = require("os");
