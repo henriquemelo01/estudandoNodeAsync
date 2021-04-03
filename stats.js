@@ -59,30 +59,81 @@ Ciclo de uma vida de uma promisse:
    Fullfilled : A operação assincrona foi bem sucedida e a promisse foi preenchida com um valor esperada.
    Rejected: Houve um erro na operação assincrona e a promisse não foi preenchida corretamente. 
 
-Ex: Ao utilizarmos a função fetch da Fetch Api, para fazermos a requisição de um dado vindo através de uma API, esta cria uma promisse, que irá armazenar a responsta vinda de uma API. A promisse contém o metodo then, este metodo é executado quando a promisse for preenchida (fullfiled)
 
-Quando usamos o resultado de uma promisse dizemos que estamos consumindo a promisse
+// Consumindo dados de uma API usando a Fetch API:
+
+O metodo fetch executa uma requisição do tipo get a um Web Server que, normalmente, contem uma API. 
+
+Ao utilizarmos a função fetch da Fetch Api, para fazermos a requisição de um dado vindo através de uma API, esta cria uma promisse, que irá armazenar a resposta vinda de uma API. A promisse contém o metodo then, este metodo é executado quando a promisse for preenchida (fullfiled), para acessarmos o body da resposta, ou seja, os dados retornados pela API no formato de JSON, utiliza-se o metodo json().
+
+OBS: o metodo then sempre retorna uma promisse, se retornarmos um valor no then este será o valor preenchido na promisse (fullfilled value).
+
+// Identificando erros na requisição:
+Podemos identificar erros na operação assincrona (requisição) usando o metodo then, uma vez que o segundo parâmetro do metodo é uma callback que é executada em caso a promisse não seja preenchida 
+
+      .then(callbackPromiseWasFullfilled, callbackPromiseWasRejected)
+
+A callback promiseWasRejected recebe como parâmetro o erro. Por padrão, a callback identifica apenas o erro devido a perda de conexão do client, entretanto, pode-se identificar outros tipos de erros como o 404 que indica "page not found";
+
+Uma outra forma de "identificarmos" erros em operações assincronas é utilizando o metodo catch. Este dispara uma callback toda vez que uma promisse for rejeitada, assim em uma cadeia de promisses, o metodo é disparado toda vez que ocorrer um erro independente do local onde ocorreu o mesmo, ou seja, no meio, no final, no inicio da cadeia de promisses. Assim como a segunda callback do then, o catch recebe como parâmetro o objeto error.
+
+A linha de código, throw new error(msgDeErro), faz um retorno em caso de erro, ou seja, sai do escopo onde foi declarada, rejeitando a operação e o parâmetro msgDeErro é armazenado na propriedade message do objeto error que foi "instanciado". Além disso todo erro declarado através deste código propaga até o metodo catch() visto anteriormente 
+
+O metodo finally sempre dispara sua callback, independente se houve erro na operação assincrona ou se a promise foi preenchida. Isso normalmente, é utilizado nos componentes de loading. 
+
+OBS: Quando ocorre um 404 (page not found) a promise é preenchida, ou seja, para a promise não houve um rejeição. Assim, será necessário tratar tal comportamento. O retorno desta promisse contem a propriedade ok, em caso do erro 404, o estado desta propriedade é false, dessa forma, se estado de ok for falso "criamos" um novo erro, usando throw new error.
+
 
 */
 
-// Consumindo Promisses -> Acessando dados de uma API
-const getCountry = function (countryName) {
+// Consumindo Promisses -> Acessando dados de uma API -> Rest Countries API
+
+const btnWhereAmI = document.querySelector(".btnWhereAmI");
+btnWhereAmI.addEventListener("click", function () {
+  getCountryData("brazil");
+  errSpan.textContent = "";
+});
+
+const errSpan = document.querySelector(".errMsg");
+
+const getCountryData = function (countryName) {
+  // Fetch => http request.get(), retorna uma promisse
   const request = fetch(`https://restcountries.eu/rest/v2/name/${countryName}`);
   request
     .then((response) => {
+      // O response é o valor que foi preenchido na promisse que foi retornada da função fetch. Como o fetch() efetua uma requisição do tipo Get a um web server que contém uma API, denominamos tal parâmetro como response
+
       // É um metodo do objeto response que permite acessar o body da response -> parse
+
+      // ou response.status === 404
+      if (!response.ok)
+        throw new Error(`Country not found (${response.status})`);
+
       return response.json();
     })
     .then((data) => {
       const [countryData] = data;
-      // country data é um object
-      const { capital, population, region } = countryData;
       console.log(countryData);
-      console.log(capital, population, region);
+      const [neighbour] = countryData.borders;
+
+      if (!neighbour) return;
+
+      // Neighbour Data
+      return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}`);
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const [neighbourData] = data;
+      console.log(neighbourData);
+    })
+    .catch((error) => {
+      errSpan.textContent = `Something went wrong: ${error.message} 💣💣`;
+      console.dir(error);
+      throw new Error(`Falha na requisição: ${error} 💣💣`);
     });
 };
 
-getCountry("brazil");
+// Node
 
 // Require -> Importando modulos no Node
 const os = require("os");

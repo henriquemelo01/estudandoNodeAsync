@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.btnWhereAmI {
+  background-color: orangered;
+  color: white;
+  font-size: 1rem;
+  font-family: "Arial";
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0.85;
+  /* transition: opacity 0.5s; */
+}
+
+.btnWhereAmI:hover {
+  opacity: 1;
+}
+
+.errMsg {
+  color: rgb(197, 16, 16);
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+}
